@@ -1,0 +1,87 @@
+;
+; WDMDriver1.inf
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=Sample ; TODO: edit Class
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Provider=%ManufacturerName%
+CatalogFile=WDMDriver1.cat
+DriverVer= ; TODO: set DriverVer in stampinf property pages
+PnpLockDown=1
+
+[DestinationDirs]
+DefaultDestDir = 12
+WDMDriver1_Device_CoInstaller_CopyFiles = 11
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=SampleClassReg
+
+[SampleClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+WDMDriver1.sys  = 1,,
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll=1 ; make sure the number matches with SourceDisksNames
+
+;*****************************************
+; Install Section
+;*****************************************
+
+[Manufacturer]
+%ManufacturerName%=Standard,NT$ARCH$
+
+[Standard.NT$ARCH$]
+%WDMDriver1.DeviceDesc%=WDMDriver1_Device, Root\WDMDriver1 ; TODO: edit hw-id
+
+[WDMDriver1_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+WDMDriver1.sys
+
+;-------------- Service installation
+[WDMDriver1_Device.NT.Services]
+AddService = WDMDriver1,%SPSVCINST_ASSOCSERVICE%, WDMDriver1_Service_Inst
+
+; -------------- WDMDriver1 driver install sections
+[WDMDriver1_Service_Inst]
+DisplayName    = %WDMDriver1.SVCDESC%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\WDMDriver1.sys
+
+;
+;--- WDMDriver1_Device Coinstaller installation ------
+;
+
+[WDMDriver1_Device.NT.CoInstallers]
+AddReg=WDMDriver1_Device_CoInstaller_AddReg
+CopyFiles=WDMDriver1_Device_CoInstaller_CopyFiles
+
+[WDMDriver1_Device_CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[WDMDriver1_Device_CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[WDMDriver1_Device.NT.Wdf]
+KmdfService =  WDMDriver1, WDMDriver1_wdfsect
+[WDMDriver1_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
+ClassName="Samples" ; TODO: edit ClassName
+DiskName = "WDMDriver1 Installation Disk"
+WDMDriver1.DeviceDesc = "WDMDriver1 Device"
+WDMDriver1.SVCDESC = "WDMDriver1 Service"
