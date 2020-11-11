@@ -41,7 +41,7 @@ void CreateProcessNotifyRoutine(_In_ HANDLE ParentId, _In_ HANDLE ProcessId, _In
 	BOOLEAN IsStarted = FALSE;
 
 	PsLookupProcessByProcessId(ProcessId, &Process);
-	RtlInitAnsiString(&CurrentProcessName, gGetProcessImageFileName(Process));
+	RtlInitAnsiString(&CurrentProcessName, GetProcessImageFileName(Process));
 
 	if (CreateInfo != NULL) {
 		IsStarted = TRUE;
@@ -73,6 +73,7 @@ void CreateProcessNotifyRoutine(_In_ HANDLE ParentId, _In_ HANDLE ProcessId, _In
 }
 void DriverUnload(IN PDRIVER_OBJECT DriverObject)
 {
+	UNREFERENCED_PARAMETER(DriverObject);
 	DbgPrint("%s: driver unload routine\n", DRIVER_NAME);
 
 	if (IsCallbackCreated) {
@@ -83,6 +84,7 @@ void DriverUnload(IN PDRIVER_OBJECT DriverObject)
 	if (IsTrackedProcessCreationEventCreated) ZwClose(TrackedProcessCreationEventHandle);
 	if (IsTrackedProcessTerminationEventCreated) ZwClose(TrackedProcessTerminationEventHandle);
 }
+
 void LoadExternFunction() {
 	UNICODE_STRING buf = RTL_CONSTANT_STRING(L"PsGetProcessImageFileName");
 	GetProcessImageFileName = (GET_PROCESS_IMAGE_NAME)MmGetSystemRoutineAddress(&buf);
@@ -96,7 +98,7 @@ void InitializeGlobals() {
 	RtlInitAnsiString(&TrackedProcessName, TRACKED_PROCESS_NAME);
 
 	RtlInitUnicodeString(&buf, CREATION_EVENT_PATH);
-	TrackedProcessCreationEvent = IoCreateNotificationEvent(&buf, TrackedProcessCreationEventHandle);
+	TrackedProcessCreationEvent = IoCreateNotificationEvent(&buf, &TrackedProcessCreationEventHandle);
 	if (NULL==TrackedProcessCreationEvent) {
 		DbgPrint("%s: unable to create ProcessCreationEvent", DRIVER_NAME);
 	}
@@ -106,7 +108,7 @@ void InitializeGlobals() {
 		DbgPrint("%s: created ProcessCreationEvent", DRIVER_NAME);
 	}
 	RtlInitUnicodeString(&buf, TERMINATION_EVENT_PATH);
-	TrackedProcessTerminationEvent = IoCreateNotificationEvent(&buf, TrackedProcessTerminationEventHandle);
+	TrackedProcessTerminationEvent = IoCreateNotificationEvent(&buf, &TrackedProcessTerminationEventHandle);
 	if (NULL == TrackedProcessTerminationEvent) {
 		DbgPrint("%s: unable to create ProcessTerminationEvent", DRIVER_NAME);
 	}
@@ -132,8 +134,7 @@ NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING Regis
 		DbgPrint("%s: callback set\n", DRIVER_NAME);
 		IsCallbackCreated = TRUE;
 	}
-	else
-		DbgPrint("%s: unable to set callback:  %x\n", DRIVER_NAME, Status);
+	else DbgPrint("%s: unable to set callback:  %x\n", DRIVER_NAME, Status);
 	DriverObject->DriverUnload = DriverUnload;
 	return STATUS_SUCCESS;
 }
