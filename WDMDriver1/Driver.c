@@ -1,12 +1,11 @@
 #include <ntddk.h>
 #include <wdf.h>
-#define DRIVER_NAME "Driver1"
+#define DRIVER_NAME "WDMDriver1"
 #define TRACKED_PROCESS_NAME "Calculator.exe"
 #define CREATION_EVENT_PATH L"\\BaseNamedObjects\\ProcessCreationEvent"
 #define TERMINATION_EVENT_PATH L"\\BaseNamedObjects\\ProcessTerminationEvent"
 typedef PCHAR(*GET_PROCESS_IMAGE_NAME) (PEPROCESS Process);
 GET_PROCESS_IMAGE_NAME GetProcessImageFileName;
-
 DRIVER_INITIALIZE DriverEntry;
 PDEVICE_OBJECT GlobalDeviceObject;
 BOOLEAN IsCallbackCreated = FALSE;
@@ -19,11 +18,6 @@ PKEVENT TrackedProcessCreationEvent;
 PKEVENT TrackedProcessTerminationEvent;
 HANDLE TrackedProcessCreationEventHandle;
 HANDLE TrackedProcessTerminationEventHandle;
-
-
-
-
-
 
 
 
@@ -100,22 +94,22 @@ void InitializeGlobals() {
 	RtlInitUnicodeString(&buf, CREATION_EVENT_PATH);
 	TrackedProcessCreationEvent = IoCreateNotificationEvent(&buf, &TrackedProcessCreationEventHandle);
 	if (NULL==TrackedProcessCreationEvent) {
-		DbgPrint("%s: unable to create ProcessCreationEvent", DRIVER_NAME);
+		DbgPrint("%s: unable to create ProcessCreationEvent\n", DRIVER_NAME);
 	}
 	else {
 		KeClearEvent(TrackedProcessCreationEvent);
 		IsTrackedProcessCreationEventCreated = TRUE;
-		DbgPrint("%s: created ProcessCreationEvent", DRIVER_NAME);
+		DbgPrint("%s: created ProcessCreationEvent\n", DRIVER_NAME);
 	}
 	RtlInitUnicodeString(&buf, TERMINATION_EVENT_PATH);
 	TrackedProcessTerminationEvent = IoCreateNotificationEvent(&buf, &TrackedProcessTerminationEventHandle);
 	if (NULL == TrackedProcessTerminationEvent) {
-		DbgPrint("%s: unable to create ProcessTerminationEvent", DRIVER_NAME);
+		DbgPrint("%s: unable to create ProcessTerminationEvent\n", DRIVER_NAME);
 	}
 	else {
 		KeClearEvent(TrackedProcessTerminationEvent);
 		IsTrackedProcessTerminationEventCreated = TRUE;
-		DbgPrint("%s: created ProcessTerminationEvent", DRIVER_NAME);
+		DbgPrint("%s: created ProcessTerminationEvent\n", DRIVER_NAME);
 	}
 }
 NTSTATUS DriverEntry(_In_ PDRIVER_OBJECT DriverObject,_In_ PUNICODE_STRING RegistryPath)
