@@ -19,13 +19,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Inf Include="WDMDriver1.inf">
+    <Inf Include="WDMDriver2.inf">
       <Filter>Driver Files</Filter>
     </Inf>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Driver1.c">
+    <ClCompile Include="Driver2.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NotifyClass.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="NotifyClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
