@@ -4,8 +4,8 @@
 
 [Version]
 Signature="$WINDOWS NT$"
-Class=Sample ; TODO: edit Class
-ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Class=WMDMDriver1Devices ; 
+ClassGuid={33b38b53-4b32-4dc9-bf40-f734a8cbb84f} ; TODO: edit ClassGuid
 Provider=%ManufacturerName%
 CatalogFile=WDMDriver1.cat
 DriverVer= ; TODO: set DriverVer in stampinf property pages
@@ -80,8 +80,8 @@ KmdfLibraryVersion = $KMDFVERSION$
 
 [Strings]
 SPSVCINST_ASSOCSERVICE= 0x00000002
-ManufacturerName="<Your manufacturer name>" ;TODO: Replace with your manufacturer name
-ClassName="Samples" ; TODO: edit ClassName
+ManufacturerName="testman1" ;TODO: Replace with your manufacturer name
+ClassName="WMDMDriver1Devices" ; TODO: edit ClassName
 DiskName = "WDMDriver1 Installation Disk"
 WDMDriver1.DeviceDesc = "WDMDriver1 Device"
 WDMDriver1.SVCDESC = "WDMDriver1 Service"
