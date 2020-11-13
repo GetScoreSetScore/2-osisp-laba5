@@ -2,7 +2,7 @@
 #include <stdio.h>
 #define CREATION_EVENT_PATH L"Global\\ProcessCreationEvent"
 #define TERMINATION_EVENT_PATH L"Global\\ProcessTerminationEvent"
-#define STARTING_PROCESS L"C:\\Windows\\System32\\notepad.exe"
+#define STARTING_PROCESS L"C:\\Windows\\notepad.exe"
 CRITICAL_SECTION Sync;
 volatile HANDLE TrackedProcessCreationEventHandle;
 volatile HANDLE TrackedProcessTerminationEventHandle;

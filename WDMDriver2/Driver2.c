@@ -40,17 +40,19 @@ void LogToFile(PANSI_STRING Operation) {
 	ANSI_STRING LogString;
 	IO_STATUS_BLOCK IoStatusBlock;
 	LARGE_INTEGER buf;
-	char str[1000];
+	LARGE_INTEGER time,loctime;
+	TIME_FIELDS fields;
+	char str[2000];
 	buf.HighPart = -1;
 	buf.LowPart = FILE_WRITE_TO_END_OF_FILE;
 	Status = OpenFile(&LogFileName, &LogFileHandle);
 	if (NT_SUCCESS(Status)) {
-		strncat(str, DRIVER_NAME, 100);
-		strncat(str, DELIMITER, 100);
-		strncat(str, TRACKED_PROCESS_NAME, 100);
-		strncat(str, DELIMITER, 100);
-		strncat(str, Operation->Buffer, 100);
-		strcat(str, "\n");
+		KeQuerySystemTime(&time);
+		ExSystemTimeToLocalTime(&time, &loctime);
+		RtlTimeToTimeFields(&loctime, &fields);
+		RtlStringCchPrintfA(str, 2000, "%d.%d.%d %d:%d:%d:%d : %s : %s : %s\n",
+			fields.Day, fields.Month, fields.Year, fields.Hour, fields.Minute, fields.Second, fields.Milliseconds,
+			DRIVER_NAME, TRACKED_PROCESS_NAME, Operation->Buffer);
 		RtlInitAnsiString(&LogString, str);
 		ZwWriteFile(LogFileHandle, NULL, NULL, NULL, &IoStatusBlock, LogString.Buffer,LogString.Length, &buf, NULL);
 		ZwClose(LogFileHandle);
