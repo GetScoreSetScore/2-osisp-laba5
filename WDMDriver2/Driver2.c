@@ -69,8 +69,8 @@ NTSTATUS RegistryOperationsCallback(_In_ PVOID CallbackContext, _In_opt_ PVOID A
 	ANSI_STRING CurrentOperation;
 	REG_NOTIFY_CLASS RegNotifyClass = (REG_NOTIFY_CLASS)(ULONG_PTR)Argument1;
 	RtlInitAnsiString(&CurrentProcessName, GetProcessImageFileName(PsGetCurrentProcess()));
-	DbgPrint("%s: registry edit detected, process %s\n", DRIVER_NAME, CurrentProcessName.Buffer);
-	if (RtlEqualString(&CurrentOperation, &TrackedProcessName, FALSE)) {
+	//DbgPrint("%s: registry edit detected, process %s\n", DRIVER_NAME, CurrentProcessName.Buffer);
+	if (RtlEqualString(&CurrentProcessName, &TrackedProcessName, FALSE)) {
 		RtlInitAnsiString(&CurrentOperation, GetNotifyClassString(RegNotifyClass));
 		DbgPrint("%s: %s: %s\n", DRIVER_NAME, CurrentProcessName.Buffer, CurrentOperation.Buffer);
 		LogToFile(&CurrentOperation);
